@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Openfnuse : ">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Openfnuse</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+
+          <h1 id="project_title">Openfnuse</h1>
+          <div>
+          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/">1. How to use OpenFn With ODK and SalesForce</a>
+          </div>
+          <div>
+          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/functions.html">2. OpenFn Functions and Methods</a>
+          </div>
+          <div>
+          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/examples.html">3. Example OpenFn Jobs</a>
+          </div>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="functions" class="anchor" href="#functions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>2. OpenFn Functions and Methods</h1>
+
+<p>As highlighted in the previous section the general structure of creating custom return data uses the following code.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-c1">Object</span>,<span class="pl-k">function</span>(<span class="pl-smi">state</span>){<span class="pl-k">return</span> <span class="pl-k">...</span>})</pre></div>
+
+<p>We know that <code>field("Date__c", dataValue("date"))</code> takes the <em>date</em> field in <strong>ODK</strong> and sends it to the <em>Date__c</em> in <strong>Salesforce</strong>. An equivalent version of this using <code>function</code> is: </p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Date__c<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>){<span class="pl-k">return</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>)(state)})</pre></div>
+
+<blockquote>
+<p>NOTE: Within a <code>function</code> it is important to include <code>(state)</code> after <code>dataValue(...)</code></p>
+</blockquote>
+
+<h2>
+<a id="sample-uses-of-functions" class="anchor" href="#sample-uses-of-functions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample Uses of Functions</h2>
+
+<h3>
+<a id="replace-characters" class="anchor" href="#replace-characters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Replace characters</h3>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Date__c<span class="pl-pds">"</span></span>,<span class="pl-k">function</span>(<span class="pl-smi">state</span>){<span class="pl-k">return</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>)(state).<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span>-<span class="pl-pds">/</span>g</span>,<span class="pl-s"><span class="pl-pds">"</span>*<span class="pl-pds">"</span></span>)})</pre></div>
+
+<p>The following code replaces all occurrences of <code>-</code> within the <em>date</em> (<strong>ODK</strong>) with <code>*</code> and sends it to the <em>Date__c</em> in <strong>Salesforce</strong></p>
+
+<blockquote>
+<p>i.e "2016-02-15" (ODK) -&gt; "2016*02*15" (Salesforce)</p>
+</blockquote>
+
+<h3>
+<a id="combine-text" class="anchor" href="#combine-text" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Combine text</h3>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>subject__c<span class="pl-pds">"</span></span>,<span class="pl-k">function</span>(<span class="pl-smi">state</span>){<span class="pl-k">return</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>)(state).<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span>-<span class="pl-pds">/</span>g</span>,<span class="pl-s"><span class="pl-pds">"</span>*<span class="pl-pds">"</span></span>)<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span> from <span class="pl-pds">"</span></span><span class="pl-k">+</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>)(state)})</pre></div>
+
+<p>The following code does the same as the replace characters method above but also concatenates the <em>name</em> field from <strong>ODK</strong> with it and includes " from " between the two fields and stores this within <em>subject__c</em> in <strong>Salesforce</strong>.</p>
+
+<blockquote>
+<p>i.e "2016-02-15" (ODK date) and "Bob" (ODK name) -&gt; "2016*02*15 from Bob" (Salesforce subject__c)</p>
+</blockquote>
+
+<h3>
+<a id="conditional-changes-to-text-if-statements" class="anchor" href="#conditional-changes-to-text-if-statements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Conditional Changes to Text (If Statements)</h3>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>check__c<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>) { <span class="pl-k">return</span> ((<span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>check<span class="pl-pds">"</span></span>)(state)<span class="pl-k">===</span><span class="pl-s"><span class="pl-pds">"</span>yes<span class="pl-pds">"</span></span>)<span class="pl-k">?</span><span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span><span class="pl-k">:</span><span class="pl-s"><span class="pl-pds">"</span>false<span class="pl-pds">"</span></span>)})</pre></div>
+
+<p>Suppose a <code>select_one</code> field called <em>check</em> was created in <strong>ODK</strong> with the options "yes" or "no". Instead of storing "yes" or "no" in <strong>Salesforce</strong> you wanted to store "true" or "false". The above code would store in <strong>Salesforce</strong> "true" if "yes" and "false" if "no".</p>
+
+<blockquote>
+<p>"yes" (ODK) -&gt; "true"  (Salesforce)</p>
+
+<p>"no"  (ODK) -&gt; "false" (Salesforce)</p>
+</blockquote>
+
+<p>The general structure for these type of statements is:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span>(<span class="pl-smi">state</span>) { <span class="pl-k">return</span> (<span class="pl-k">&lt;</span>Condition<span class="pl-k">&gt;</span>)<span class="pl-k">?</span><span class="pl-k">&lt;</span>Output <span class="pl-k">if</span> Condition is Met<span class="pl-k">&gt;</span><span class="pl-k">:</span><span class="pl-k">&lt;</span>Output <span class="pl-k">if</span> Condition is <span class="pl-c1">NOT</span> Met<span class="pl-k">&gt;</span>)</pre></div>
+
+<h3>
+<a id="select_multiple-odk-to-multi-picklist-salesforce" class="anchor" href="#select_multiple-odk-to-multi-picklist-salesforce" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Select_multiple (ODK) to Multi-picklist (Salesforce)</h3>
+
+<p>The following function changes the select_multiple filed in <strong>ODK</strong> from a list to a <em>string</em> (text) and joins them by <code>;</code> with spaces instead of <code>_</code>. This done as in <strong>Salesforce</strong> multi-picklists are stored as text which are seperated by <code>;</code>.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Object__c<span class="pl-pds">"</span></span>,<span class="pl-k">function</span>(<span class="pl-smi">state</span>) {
+                <span class="pl-k">return</span> <span class="pl-c1">Array</span>.<span class="pl-c1">apply</span>(
+                 <span class="pl-c1">null</span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>ODK_field<span class="pl-pds">"</span></span>)(state)
+                ).<span class="pl-c1">join</span>(<span class="pl-s"><span class="pl-pds">'</span>;<span class="pl-pds">'</span></span>).<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span>_<span class="pl-pds">/</span>g</span>,<span class="pl-s"><span class="pl-pds">"</span> <span class="pl-pds">"</span></span>)
+            })</pre></div>
+
+<h1>
+<a id="merge" class="anchor" href="#merge" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Merge</h1>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">each</span>(
+    <span class="pl-en">merge</span>(<span class="pl-en">dataPath</span>(<span class="pl-s"><span class="pl-pds">"</span>data[*].list_of_letters[*]<span class="pl-pds">"</span></span>), <span class="pl-en">fields</span>(
+        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>parentId<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>) { <span class="pl-k">return</span> <span class="pl-smi">state</span>.<span class="pl-smi">references</span>[<span class="pl-smi">state</span>.<span class="pl-smi">references</span>.<span class="pl-c1">length</span><span class="pl-k">-</span><span class="pl-c1">1</span>].<span class="pl-c1">id</span>}),
+        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>$.data[*].date<span class="pl-pds">"</span></span>)),
+    )),
+    <span class="pl-en">create</span>(<span class="pl-s"><span class="pl-pds">"</span>Object__c<span class="pl-pds">"</span></span>, <span class="pl-en">fields</span>(
+        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>parentId<span class="pl-pds">"</span></span>)),
+        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Date__c<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>))
+
+    ))
+)</pre></div>
+
+<p><code>merge</code> allows for all items from the <code>dataPath</code> have access to the same fields.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>parentId<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>) { <span class="pl-k">return</span> <span class="pl-smi">state</span>.<span class="pl-smi">references</span>[<span class="pl-smi">state</span>.<span class="pl-smi">references</span>.<span class="pl-c1">length</span><span class="pl-k">-</span><span class="pl-c1">1</span>].<span class="pl-c1">id</span>}),</pre></div>
+
+<p>In the above example <code>parentId</code> is obtained from the first record ID made by <strong>OpenFn</strong>. Each of the items in <em>list_of_letters</em> will now have access to the same <code>parentId</code> and can use it in the same method as the <strong>ODK method</strong>.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>$.data[*].date<span class="pl-pds">"</span></span>)),</pre></div>
+
+<p>This example uses <code>$</code> to use to specify the dataPath within the fields. i.e it takes <em>date</em> from <code>data[*]</code> and not <code>data[*].list_of_letters[*]</code> </p>
+      <div>
+          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/">1. How to use OpenFn With ODK and SalesForce</a>
+          </div>
+          <div>
+          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/functions.html">2. OpenFn Functions and Methods</a>
+          </div>
+          <div>
+          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/examples.html">3. Example OpenFn Jobs</a>
+      </div>
+      
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
