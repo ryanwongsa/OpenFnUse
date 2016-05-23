@@ -38,7 +38,75 @@
       <section id="main_content" class="inner">
         <h1>
 <a id="how-to-use-openfn-with-odk-and-salesforce" class="anchor" href="#how-to-use-openfn-with-odk-and-salesforce" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>3. Example OpenFn Jobs</h1>
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Untitled Document.md</title><style></style></head><body id="preview">
+<h1><a id="Functions_0"></a>Functions</h1>
+<p>As highlighted in the previous section the general structure of creating custom return data uses the following code.</p>
+<pre><code class="language-javascript">field(<span class="hljs-built_in">Object</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">state</span>)</span>{<span class="hljs-keyword">return</span> ...})
+</code></pre>
+<p>We know that <code>field(&quot;Date__c&quot;, dataValue(&quot;date&quot;))</code> takes the <em>date</em> field in <strong>ODK</strong> and sends it to the <em>Date__c</em> in <strong>Salesforce</strong>. An equivalent version of this using <code>function</code> is:</p>
+<pre><code class="language-javascript">field(<span class="hljs-string">"Date__c"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">state</span>)</span>{<span class="hljs-keyword">return</span> dataValue(<span class="hljs-string">"date"</span>)(state)})
+</code></pre>
+<blockquote>
+<p>NOTE: Within a <code>function</code> it is important to include <code>(state)</code> after <code>dataValue(...)</code></p>
+</blockquote>
+<h2><a id="Sample_Uses_of_Functions_13"></a>Sample Uses of Functions</h2>
+<h3><a id="Replace_characters_15"></a>Replace characters</h3>
+<pre><code class="language-javascript">field(<span class="hljs-string">"Date__c"</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">state</span>)</span>{<span class="hljs-keyword">return</span> dataValue(<span class="hljs-string">"date"</span>)(state).replace(<span class="hljs-regexp">/-/g</span>,<span class="hljs-string">"*"</span>)})
+</code></pre>
+<p>The following code replaces all occurrences of <code>-</code> within the <em>date</em> (<strong>ODK</strong>) with <code>*</code> and sends it to the <em>Date__c</em> in <strong>Salesforce</strong></p>
+<blockquote>
+<p>i.e “2016-02-15” (ODK) -&gt; “2016*02*15” (Salesforce)</p>
+</blockquote>
+<h3><a id="Combine_text_22"></a>Combine text</h3>
+<pre><code class="language-javascript">field(<span class="hljs-string">"subject__c"</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">state</span>)</span>{<span class="hljs-keyword">return</span> dataValue(<span class="hljs-string">"date"</span>)(state).replace(<span class="hljs-regexp">/-/g</span>,<span class="hljs-string">"*"</span>)+<span class="hljs-string">" from "</span>+ dataValue(<span class="hljs-string">"name"</span>)(state)})
+</code></pre>
+<p>The following code does the same as the replace characters method above but also concatenates the <em>name</em> field from <strong>ODK</strong> with it and includes &quot; from &quot; between the two fields and stores this within <em>subject__c</em> in <strong>Salesforce</strong>.</p>
+<blockquote>
+<p>i.e “2016-02-15” (ODK date) and “Bob” (ODK name) -&gt; “2016*02*15 from Bob” (Salesforce subject__c)</p>
+</blockquote>
+<h3><a id="Conditional_Changes_to_Text_If_Statements_30"></a>Conditional Changes to Text (If Statements)</h3>
+<pre><code class="language-javascript">field(<span class="hljs-string">"check__c"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">state</span>) </span>{ <span class="hljs-keyword">return</span> ((dataValue(<span class="hljs-string">"check"</span>)(state)===<span class="hljs-string">"yes"</span>)?<span class="hljs-string">"true"</span>:<span class="hljs-string">"false"</span>)})
+</code></pre>
+<p>Suppose a <code>select_one</code> field called <em>check</em> was created in <strong>ODK</strong> with the options “yes” or “no”. Instead of storing “yes” or “no” in <strong>Salesforce</strong> you wanted to store “true” or “false”. The above code would store in <strong>Salesforce</strong> “true” if “yes” and “false” if “no”.</p>
+<blockquote>
+<p>“yes” (ODK) -&gt; “true”  (Salesforce)</p>
+</blockquote>
+<blockquote>
+<p>“no”  (ODK) -&gt; “false” (Salesforce)</p>
+</blockquote>
+<p>The general structure for these type of statements is:</p>
+<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">state</span>) </span>{ <span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">Condition</span>&gt;</span>)</span>?<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">Output</span> <span class="hljs-attribute">if</span> <span class="hljs-attribute">Condition</span> <span class="hljs-attribute">is</span> <span class="hljs-attribute">Met</span>&gt;</span>:<span class="hljs-tag">&lt;<span class="hljs-title">Output</span> <span class="hljs-attribute">if</span> <span class="hljs-attribute">Condition</span> <span class="hljs-attribute">is</span> <span class="hljs-attribute">NOT</span> <span class="hljs-attribute">Met</span>&gt;</span>)</span>
+</code></pre>
+<h3><a id="Select_multiple_ODK_to_Multipicklist_Salesforce_45"></a>Select_multiple (ODK) to Multi-picklist (Salesforce)</h3>
+<p>The following function changes the select_multiple filed in <strong>ODK</strong> from a list to a <em>string</em> (text) and joins them by <code>;</code> with spaces instead of <code>_</code>. This done as in <strong>Salesforce</strong> multi-picklists are stored as text which are seperated by <code>;</code>.</p>
+<pre><code class="language-javascript">field(<span class="hljs-string">"Object__c"</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">state</span>) </span>{
+                <span class="hljs-keyword">return</span> <span class="hljs-built_in">Array</span>.apply(
+                 <span class="hljs-literal">null</span>, dataValue(<span class="hljs-string">"ODK_field"</span>)(state)
+                ).join(<span class="hljs-string">';'</span>).replace(<span class="hljs-regexp">/_/g</span>,<span class="hljs-string">" "</span>)
+            })
+</code></pre>
+<h1><a id="Merge_56"></a>Merge</h1>
+<pre><code class="language-javascript">each(
+    merge(dataPath(<span class="hljs-string">"data[*].list_of_letters[*]"</span>), fields(
+        field(<span class="hljs-string">"parentId"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">state</span>) </span>{ <span class="hljs-keyword">return</span> state.references[state.references.length-<span class="hljs-number">1</span>].id}),
+        field(<span class="hljs-string">"date"</span>, dataValue(<span class="hljs-string">"$.data[*].date"</span>)),
+    )),
+    create(<span class="hljs-string">"Object__c"</span>, fields(
+        field(<span class="hljs-string">"id"</span>, dataValue(<span class="hljs-string">"parentId"</span>)),
+        field(<span class="hljs-string">"Date__c"</span>, dataValue(<span class="hljs-string">"date"</span>))
+      
+    ))
+)
+</code></pre>
+<p><code>merge</code> allows for all items from the <code>dataPath</code> have access to the same fields.</p>
+<pre><code class="language-javascript">field(<span class="hljs-string">"parentId"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">state</span>) </span>{ <span class="hljs-keyword">return</span> state.references[state.references.length-<span class="hljs-number">1</span>].id}),
+</code></pre>
+<p>In the above example <code>parentId</code> is obtained from the first record ID made by <strong>OpenFn</strong>. Each of the items in <em>list_of_letters</em> will now have access to the same <code>parentId</code> and can use it in the same method as the <strong>ODK method</strong>.</p>
+<pre><code class="language-javascript">field(<span class="hljs-string">"date"</span>, dataValue(<span class="hljs-string">"$.data[*].date"</span>)),
+</code></pre>
+<p>This example uses <code>$</code> to use to specify the dataPath within the fields. i.e it takes <em>date</em> from <code>data[*]</code> and not <code>data[*].list_of_letters[*]</code></p>
 
+</body></html>
       <div>
           <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/">1. How to use OpenFn With ODK and SalesForce</a>
           </div>
