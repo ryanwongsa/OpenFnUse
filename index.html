@@ -9,8 +9,6 @@
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
     <title>Openfnuse</title>
-    
-
   </head>
 
   <body>
@@ -18,18 +16,15 @@
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ryanwongsa/OpenFnUse">View on GitHub</a>
 
-          <h1 id="project_title">OpenFn Use</h1>
-          <div>
-          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/">1. How to use OpenFn With ODK and SalesForce</a>
-          </div>
-          <div>
-          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/functions.html">2. OpenFn Functions and Methods</a>
-          </div>
-          <div>
-          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/examples.html">3. Example OpenFn Jobs</a>
-          </div>
-          
+          <h1 id="project_title">Openfnuse</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ryanwongsa/OpenFnUse/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ryanwongsa/OpenFnUse/tarball/master">Download this project as a tar.gz file</a>
+            </section>
         </header>
     </div>
 
@@ -37,178 +32,99 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h1>
-<a id="how-to-use-openfn-with-odk-and-salesforce" class="anchor" href="#how-to-use-openfn-with-odk-and-salesforce" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1. How to use OpenFn With ODK and SalesForce</h1>
+<a id="functions" class="anchor" href="#functions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Functions</h1>
 
-<h2>
-<a id="sample-json-data-received-by-openfn" class="anchor" href="#sample-json-data-received-by-openfn" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample JSON Data Received by OpenFn</h2>
-
-<div class="highlight highlight-source-json"><pre>{
-  <span class="pl-s"><span class="pl-pds">"</span>token<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>,
-  <span class="pl-s"><span class="pl-pds">"</span>formVersion<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>,
-  <span class="pl-s"><span class="pl-pds">"</span>formId<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>odk_form_id<span class="pl-pds">"</span></span>,
-  <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: [
-    {
-      <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>2016-05-11<span class="pl-pds">"</span></span>,
-      <span class="pl-s"><span class="pl-pds">"</span>list_of_letters<span class="pl-pds">"</span></span>:[<span class="pl-s"><span class="pl-pds">"</span>abc<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>def<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>ghi<span class="pl-pds">"</span></span>]
-      }
-    ],
-  <span class="pl-s"><span class="pl-pds">"</span>content<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>record<span class="pl-pds">"</span></span>
-}</pre></div>
-
-<h3>
-<a id="structure-of-json-data" class="anchor" href="#structure-of-json-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Structure of JSON Data</h3>
-
-<p>Below is the extracted data from the ODK form.</p>
-
-<div class="highlight highlight-source-json"><pre><span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: [
-    {
-      <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>2016-05-11<span class="pl-pds">"</span></span>,
-      <span class="pl-s"><span class="pl-pds">"</span>list_of_letters<span class="pl-pds">"</span></span>:[<span class="pl-s"><span class="pl-pds">"</span>abc<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>def<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>ghi<span class="pl-pds">"</span></span>]
-      }
-    ]</pre></div>
-
-<blockquote>
-<p>Fields with similar structure to <code>date</code> are types from ODK such as <em>text</em>, <em>date</em>, <em>integer</em>, <em>select_one</em>.</p>
-
-<p>Fields with similar structure to <code>list_of_letters</code> is obtained from the <em>select_multiple</em> type in ODK.</p>
-</blockquote>
-
-<p>The structure is similar to directories on a computer.</p>
-
-<p>Left of the <code>:</code> represents the name of the file / folder. Right of the <code>:</code> represents the contents of the file / folder.</p>
-
-<p>Square brackets <code>[ ]</code> on the right of <code>:</code> can be treated as contents of a folder.</p>
-
-<p>While quotations <code>" "</code> on the right of <code>:</code> are treated as contents of a file.</p>
-
-<p>Example using the above extracted data:</p>
-
-<pre><code>\data\ (folder)
-    date (file) -&gt; "2016-05-11" (contents)
-    \list_of_letters\ (folder)
-        0 (file) -&gt; "abc" (contents)
-        1 (file) -&gt; "def" (contents)
-        2 (file) -&gt; "ghi" (contents)
-</code></pre>
-
-<blockquote>
-<p>NOTE: <code>"list_of_letters":["abc","def","ghi"]</code> has 3 items within the <em>list_of_letters</em> folder. Further details of dealing with this type of lists on the next section.</p>
-</blockquote>
-
-<h2>
-<a id="openfn-language-structure" class="anchor" href="#openfn-language-structure" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>OpenFn Language Structure</h2>
-
-<div class="highlight highlight-source-js"><pre><span class="pl-en">each</span>(
-    <span class="pl-en">dataPath</span>(<span class="pl-s"><span class="pl-pds">"</span>data[*]<span class="pl-pds">"</span></span>),
-        <span class="pl-en">create</span>(<span class="pl-s"><span class="pl-pds">"</span>Object__c<span class="pl-pds">"</span></span>, <span class="pl-en">fields</span>(
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>RecordTypeID<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>012345<span class="pl-pds">"</span></span>),
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Date__c<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>))
-            <span class="pl-k">...</span>
-        ))
-)</pre></div>
-
-<h3>
-<a id="eachdatapathpathb" class="anchor" href="#eachdatapathpathb" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>each(dataPath(<em>path</em>),<em>B</em>)</h3>
-
-<p><code>each</code> goes through each of the items in the list from the <em>path</em> specified. Therefore for each item the contents of <em>B</em> component will execute. </p>
-
-<p>In the case of <code>dataPath("data[*]")</code> using the above example there is only one item in the data list. But in the example below we have two items which are separated by a comma.</p>
-
-<div class="highlight highlight-source-json"><pre><span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: [
-    {
-      <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>2016-05-11<span class="pl-pds">"</span></span>,
-      <span class="pl-s"><span class="pl-pds">"</span>list_of_letters<span class="pl-pds">"</span></span>:[<span class="pl-s"><span class="pl-pds">"</span>abc<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>def<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>ghi<span class="pl-pds">"</span></span>]
-    },
-    {
-      <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>2016-06-12<span class="pl-pds">"</span></span>,
-      <span class="pl-s"><span class="pl-pds">"</span>list_of_letters<span class="pl-pds">"</span></span>:[<span class="pl-s"><span class="pl-pds">"</span>zxy<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>wer<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>fds<span class="pl-pds">"</span></span>]
-    }
-]</pre></div>
-
-<p>In the case of <code>dataPath("list_of_letters[*]")</code> using the above example there is three item in the list. </p>
-
-<p>Note When using <code>dataPath("list_of_letters[*]")</code>, the <code>"list_of_letters":["abc","def","ghi"]</code> can be seen as</p>
-
-<div class="highlight highlight-source-json"><pre><span class="pl-s"><span class="pl-pds">"</span>list_of_letters<span class="pl-pds">"</span></span>:[
-     {
-      <span class="pl-s"><span class="pl-pds">"</span>0<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>a<span class="pl-pds">"</span></span>,
-      <span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>b<span class="pl-pds">"</span></span>,
-      <span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>c<span class="pl-pds">"</span></span>
-     },
-     {
-      <span class="pl-s"><span class="pl-pds">"</span>0<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>d<span class="pl-pds">"</span></span>,
-      <span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>e<span class="pl-pds">"</span></span>,
-      <span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>f<span class="pl-pds">"</span></span>
-     },
-     {
-      <span class="pl-s"><span class="pl-pds">"</span>0<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>g<span class="pl-pds">"</span></span>,
-      <span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>h<span class="pl-pds">"</span></span>,
-      <span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>i<span class="pl-pds">"</span></span>
-     }
-]</pre></div>
-
-<h3>
-<a id="datapathpath" class="anchor" href="#datapathpath" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>dataPath(path)</h3>
-
-<p>In the above example <code>dataPath("data[*]")</code> means the function is looking in the folder <em>\data\</em> which contains the <em>date</em> file and <em>list_of_letters</em> folder.</p>
-
-<p>Suppose we used <code>dataPath("data[*].list_of_letters[*]")</code>, then we would be looking in the folder <em>\list_of_letters\</em> which contains the <em>0</em>, <em>1</em> and <em>2</em> files and not <em>date</em> file.</p>
-
-<h3>
-<a id="createobjectfields" class="anchor" href="#createobjectfields" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>create(Object,fields(...))</h3>
-
-<p>In the above example the "Object__c" represents the Object in <strong>Salesforce</strong> where you want create the data to be stored.</p>
-
-<p>NOTE: If the <code>data[*]</code> is used as the <code>dataPath</code> and using the below data with 2 items, it would create 2 records within <strong>Salesforce</strong>.</p>
-
-<div class="highlight highlight-source-json"><pre><span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: [
-    {
-      <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>2016-05-11<span class="pl-pds">"</span></span>,
-      <span class="pl-s"><span class="pl-pds">"</span>list_of_letters<span class="pl-pds">"</span></span>:[<span class="pl-s"><span class="pl-pds">"</span>abc<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>def<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>ghi<span class="pl-pds">"</span></span>]
-    },
-    {
-      <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>2016-06-12<span class="pl-pds">"</span></span>,
-      <span class="pl-s"><span class="pl-pds">"</span>list_of_letters<span class="pl-pds">"</span></span>:[<span class="pl-s"><span class="pl-pds">"</span>zxy<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>wer<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>fds<span class="pl-pds">"</span></span>]
-    }
-]</pre></div>
-
-<h3>
-<a id="fieldab" class="anchor" href="#fieldab" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>field(a,b)</h3>
-
-<p>The <code>a</code> component within <code>field</code> represents <em>API Name</em> within <em>Salesforce</em> where the data needs to be stored in. In <strong>Salesforce</strong> the <em>API Name</em> usually ends with <em>__c</em>.
-The <code>b</code> component within <code>field</code> represents where the data is coming from. This can be hardcoded, from the ODK data or a mixture of both.</p>
-
-<h5>
-<a id="hardcoded-version" class="anchor" href="#hardcoded-version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Hardcoded Version</h5>
-
-<p><code>field("RecordTypeID","012345")</code> inserts "012345" into "RecordTypeID" in <strong>Salesforce</strong>.</p>
-
-<h5>
-<a id="odk-version" class="anchor" href="#odk-version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ODK Version</h5>
-
-<p><code>field("Date__c", dataValue("date"))</code> inserts the contents of "date" from ODK into "Date__c" in Salesforce.</p>
-
-<h5>
-<a id="custom-version" class="anchor" href="#custom-version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Custom Version</h5>
+<p>As highlighted in the previous section the general structure of creating custom return data uses the following code.</p>
 
 <div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-c1">Object</span>,<span class="pl-k">function</span>(<span class="pl-smi">state</span>){<span class="pl-k">return</span> <span class="pl-k">...</span>})</pre></div>
 
-<p>In order to make customised data stored in <strong>Salesforce</strong> a <code>function</code> needs to be created. The above code shows the general structure where <code>return</code> is sends to data to be stored in the <strong>Salesforce</strong> Object.</p>
+<p>We know that <code>field("Date__c", dataValue("date"))</code> takes the <em>date</em> field in <strong>ODK</strong> and sends it to the <em>Date__c</em> in <strong>Salesforce</strong>. An equivalent version of this using <code>function</code> is: </p>
 
-<p>In the next Section the focus is on making custom return fields and the conversion of <strong>ODK</strong> fields to <strong>Salesforce</strong> fields.</p>
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Date__c<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>){<span class="pl-k">return</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>)(state)})</pre></div>
 
-      <div>
-          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/">1. How to use OpenFn With ODK and SalesForce</a>
-          </div>
-          <div>
-          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/functions.html">2. OpenFn Functions and Methods</a>
-          </div>
-          <div>
-          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/examples.html">3. Example OpenFn Jobs</a>
-      </div>
-      <section>
+<blockquote>
+<p>NOTE: Within a <code>function</code> it is important to include <code>(state)</code> after <code>dataValue(...)</code></p>
+</blockquote>
+
+<h2>
+<a id="sample-uses-of-functions" class="anchor" href="#sample-uses-of-functions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample Uses of Functions</h2>
+
+<h3>
+<a id="replace-characters" class="anchor" href="#replace-characters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Replace characters</h3>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Date__c<span class="pl-pds">"</span></span>,<span class="pl-k">function</span>(<span class="pl-smi">state</span>){<span class="pl-k">return</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>)(state).<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span>-<span class="pl-pds">/</span>g</span>,<span class="pl-s"><span class="pl-pds">"</span>*<span class="pl-pds">"</span></span>)})</pre></div>
+
+<p>The following code replaces all occurrences of <code>-</code> within the <em>date</em> (<strong>ODK</strong>) with <code>*</code> and sends it to the <em>Date__c</em> in <strong>Salesforce</strong></p>
+
+<blockquote>
+<p>i.e "2016-02-15" (ODK) -&gt; "2016*02*15" (Salesforce)</p>
+</blockquote>
+
+<h3>
+<a id="combine-text" class="anchor" href="#combine-text" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Combine text</h3>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>subject__c<span class="pl-pds">"</span></span>,<span class="pl-k">function</span>(<span class="pl-smi">state</span>){<span class="pl-k">return</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>)(state).<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span>-<span class="pl-pds">/</span>g</span>,<span class="pl-s"><span class="pl-pds">"</span>*<span class="pl-pds">"</span></span>)<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span> from <span class="pl-pds">"</span></span><span class="pl-k">+</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>)(state)})</pre></div>
+
+<p>The following code does the same as the replace characters method above but also concatenates the <em>name</em> field from <strong>ODK</strong> with it and includes " from " between the two fields and stores this within <em>subject__c</em> in <strong>Salesforce</strong>.</p>
+
+<blockquote>
+<p>i.e "2016-02-15" (ODK date) and "Bob" (ODK name) -&gt; "2016*02*15 from Bob" (Salesforce subject__c)</p>
+</blockquote>
+
+<h3>
+<a id="conditional-changes-to-text-if-statements" class="anchor" href="#conditional-changes-to-text-if-statements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Conditional Changes to Text (If Statements)</h3>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>check__c<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>) { <span class="pl-k">return</span> ((<span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>check<span class="pl-pds">"</span></span>)(state)<span class="pl-k">===</span><span class="pl-s"><span class="pl-pds">"</span>yes<span class="pl-pds">"</span></span>)<span class="pl-k">?</span><span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span><span class="pl-k">:</span><span class="pl-s"><span class="pl-pds">"</span>false<span class="pl-pds">"</span></span>)})</pre></div>
+
+<p>Suppose a <code>select_one</code> field called <em>check</em> was created in <strong>ODK</strong> with the options "yes" or "no". Instead of storing "yes" or "no" in <strong>Salesforce</strong> you wanted to store "true" or "false". The above code would store in <strong>Salesforce</strong> "true" if "yes" and "false" if "no".</p>
+
+<blockquote>
+<p>"yes" (ODK) -&gt; "true"  (Salesforce)</p>
+
+<p>"no"  (ODK) -&gt; "false" (Salesforce)</p>
+</blockquote>
+
+<p>The general structure for these type of statements is:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span>(<span class="pl-smi">state</span>) { <span class="pl-k">return</span> (<span class="pl-k">&lt;</span>Condition<span class="pl-k">&gt;</span>)<span class="pl-k">?</span><span class="pl-k">&lt;</span>Output <span class="pl-k">if</span> Condition is Met<span class="pl-k">&gt;</span><span class="pl-k">:</span><span class="pl-k">&lt;</span>Output <span class="pl-k">if</span> Condition is <span class="pl-c1">NOT</span> Met<span class="pl-k">&gt;</span>)</pre></div>
+
+<h3>
+<a id="select_multiple-odk-to-multi-picklist-salesforce" class="anchor" href="#select_multiple-odk-to-multi-picklist-salesforce" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Select_multiple (ODK) to Multi-picklist (Salesforce)</h3>
+
+<p>The following function changes the select_multiple filed in <strong>ODK</strong> from a list to a <em>string</em> (text) and joins them by <code>;</code> with spaces instead of <code>_</code>. This done as in <strong>Salesforce</strong> multi-picklists are stored as text which are seperated by <code>;</code>.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Object__c<span class="pl-pds">"</span></span>,<span class="pl-k">function</span>(<span class="pl-smi">state</span>) {
+                <span class="pl-k">return</span> <span class="pl-c1">Array</span>.<span class="pl-c1">apply</span>(
+                 <span class="pl-c1">null</span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>ODK_field<span class="pl-pds">"</span></span>)(state)
+                ).<span class="pl-c1">join</span>(<span class="pl-s"><span class="pl-pds">'</span>;<span class="pl-pds">'</span></span>).<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span>_<span class="pl-pds">/</span>g</span>,<span class="pl-s"><span class="pl-pds">"</span> <span class="pl-pds">"</span></span>)
+            })</pre></div>
+
+<h1>
+<a id="merge" class="anchor" href="#merge" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Merge</h1>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">each</span>(
+    <span class="pl-en">merge</span>(<span class="pl-en">dataPath</span>(<span class="pl-s"><span class="pl-pds">"</span>data[*].list_of_letters[*]<span class="pl-pds">"</span></span>), <span class="pl-en">fields</span>(
+        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>parentId<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>) { <span class="pl-k">return</span> <span class="pl-smi">state</span>.<span class="pl-smi">references</span>[<span class="pl-smi">state</span>.<span class="pl-smi">references</span>.<span class="pl-c1">length</span><span class="pl-k">-</span><span class="pl-c1">1</span>].<span class="pl-c1">id</span>}),
+        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>$.data[*].date<span class="pl-pds">"</span></span>)),
+    )),
+    <span class="pl-en">create</span>(<span class="pl-s"><span class="pl-pds">"</span>Object__c<span class="pl-pds">"</span></span>, <span class="pl-en">fields</span>(
+        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>parentId<span class="pl-pds">"</span></span>)),
+        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Date__c<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>))
+
+    ))
+)</pre></div>
+
+<p><code>merge</code> allows for all items from the <code>dataPath</code> have access to the same fields.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>parentId<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>) { <span class="pl-k">return</span> <span class="pl-smi">state</span>.<span class="pl-smi">references</span>[<span class="pl-smi">state</span>.<span class="pl-smi">references</span>.<span class="pl-c1">length</span><span class="pl-k">-</span><span class="pl-c1">1</span>].<span class="pl-c1">id</span>}),</pre></div>
+
+<p>In the above example <code>parentId</code> is obtained from the first record ID made by <strong>OpenFn</strong>. Each of the items in <em>list_of_letters</em> will now have access to the same <code>parentId</code> and can use it in the same method as the <strong>ODK method</strong>.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>$.data[*].date<span class="pl-pds">"</span></span>)),</pre></div>
+
+<p>This example uses <code>$</code> to use to specify the dataPath within the fields. i.e it takes <em>date</em> from <code>data[*]</code> and not <code>data[*].list_of_letters[*]</code> </p>
+      </section>
     </div>
-    
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
