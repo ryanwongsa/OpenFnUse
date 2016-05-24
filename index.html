@@ -8,7 +8,9 @@
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>Openfnuse</title>
+    <title>OpenFn Use</title>
+    
+
   </head>
 
   <body>
@@ -16,15 +18,18 @@
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
-          <a id="forkme_banner" href="https://github.com/ryanwongsa/OpenFnUse">View on GitHub</a>
 
-          <h1 id="project_title">Openfnuse</h1>
-          <h2 id="project_tagline"></h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/ryanwongsa/OpenFnUse/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/ryanwongsa/OpenFnUse/tarball/master">Download this project as a tar.gz file</a>
-            </section>
+          <h1 id="project_title">OpenFn Use</h1>
+          <div>
+          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/">1. How to use OpenFn With ODK and SalesForce</a>
+          </div>
+          <div>
+          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/functions.html">2. OpenFn Functions and Methods</a>
+          </div>
+          <div>
+          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/examples.html">3. Example OpenFn Jobs</a>
+          </div>
+          
         </header>
     </div>
 
@@ -32,129 +37,185 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h1>
-<a id="3-example-openfn-jobs" class="anchor" href="#3-example-openfn-jobs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>3. Example OpenFn Jobs</h1>
+<a id="how-to-use-openfn-with-odk-and-salesforce" class="anchor" href="#how-to-use-openfn-with-odk-and-salesforce" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1. How to use OpenFn With ODK and SalesForce</h1>
 
 <h2>
-<a id="simple-record" class="anchor" href="#simple-record" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Simple Record</h2>
+<a id="sample-json-data-received-by-openfn" class="anchor" href="#sample-json-data-received-by-openfn" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample JSON Data Received by OpenFn</h2>
 
-<p>The job below is adds a record from ODK to Salesforce using only the ODK form data with no modifications.</p>
+<div class="highlight highlight-source-json"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>token<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>formVersion<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>formId<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>odk_form_id<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: [
+    {
+      <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>2016-05-11<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>list_of_letters<span class="pl-pds">"</span></span>:[<span class="pl-s"><span class="pl-pds">"</span>abc<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>def<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>ghi<span class="pl-pds">"</span></span>]
+      }
+    ],
+  <span class="pl-s"><span class="pl-pds">"</span>content<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>record<span class="pl-pds">"</span></span>
+}</pre></div>
 
-<div class="highlight highlight-source-js"><pre><span class="pl-c">//for each form sent</span>
-<span class="pl-en">each</span>(
-   <span class="pl-c">// use the datapath data[*] (ODK form root data)</span>
-    <span class="pl-en">dataPath</span>(<span class="pl-s"><span class="pl-pds">"</span>data[*]<span class="pl-pds">"</span></span>),
-      <span class="pl-c">// create an Activity__c Record in Salesforce</span>
-        <span class="pl-en">create</span>(<span class="pl-s"><span class="pl-pds">"</span>Activity__c<span class="pl-pds">"</span></span>, <span class="pl-en">fields</span>(
-          <span class="pl-c">// with the 'RecordTypeId' (Salesforce) record (ODK)</span>
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>RecordTypeId<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>record<span class="pl-pds">"</span></span>)),
-          <span class="pl-c">// the 'name' (Salesforce) must contain 'Activities_Name' (ODK)</span>
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>Activities_Name<span class="pl-pds">"</span></span>)),
-          <span class="pl-c">// the 'Date__c' (Salesforce) must contain 'Date' (ODK)</span>
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Date__c<span class="pl-pds">"</span></span>,<span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>Date<span class="pl-pds">"</span></span>)),
-          <span class="pl-c">// the 'Duration_of_the_Session_Hour_s__c' (Salesforce) must contain 'Duration' (ODK)</span>
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Duration_of_the_Session_Hour_s__c<span class="pl-pds">"</span></span>,<span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>Duration<span class="pl-pds">"</span></span>)),
-          <span class="pl-c">// the 'comments__c' (Salesforce) must contain 'Comments' (ODK)</span>
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>comments__c<span class="pl-pds">"</span></span>,<span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>Comments<span class="pl-pds">"</span></span>))
-    ))
-)</pre></div>
+<h3>
+<a id="structure-of-json-data" class="anchor" href="#structure-of-json-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Structure of JSON Data</h3>
+
+<p>Below is the extracted data from the ODK form.</p>
+
+<div class="highlight highlight-source-json"><pre><span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: [
+    {
+      <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>2016-05-11<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>list_of_letters<span class="pl-pds">"</span></span>:[<span class="pl-s"><span class="pl-pds">"</span>abc<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>def<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>ghi<span class="pl-pds">"</span></span>]
+      }
+    ]</pre></div>
+
+<blockquote>
+<p>Fields with similar structure to <code>date</code> are types from ODK such as <em>text</em>, <em>date</em>, <em>integer</em>, <em>select_one</em>.</p>
+
+<p>Fields with similar structure to <code>list_of_letters</code> is obtained from the <em>select_multiple</em> type in ODK.</p>
+</blockquote>
+
+<p>The structure is similar to directories on a computer.</p>
+
+<p>Left of the <code>:</code> represents the name of the file / folder. Right of the <code>:</code> represents the contents of the file / folder.</p>
+
+<p>Square brackets <code>[ ]</code> on the right of <code>:</code> can be treated as contents of a folder.</p>
+
+<p>While quotations <code>" "</code> on the right of <code>:</code> are treated as contents of a file.</p>
+
+<p>Example using the above extracted data:</p>
+
+<pre><code>\data\ (folder)
+    date (file) -&gt; "2016-05-11" (contents)
+    \list_of_letters\ (folder)
+        0 (file) -&gt; "abc" (contents)
+        1 (file) -&gt; "def" (contents)
+        2 (file) -&gt; "ghi" (contents)
+</code></pre>
+
+<blockquote>
+<p>NOTE: <code>"list_of_letters":["abc","def","ghi"]</code> has 3 items within the <em>list_of_letters</em> folder. Further details of dealing with this type of lists on the next section.</p>
+</blockquote>
 
 <h2>
-<a id="multiple-records-eg-activity--attendance" class="anchor" href="#multiple-records-eg-activity--attendance" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Multiple Records (E.g. Activity + Attendance)</h2>
-
-<p>Using the functions and methods from the previous Section, we can use  <strong>OpenFn</strong> to add multiple records into <strong>Salesforce</strong> such as an Activity with Attendance. The Attendance uses a <em>master lookup</em> on <strong>Salesforce</strong>.</p>
+<a id="openfn-language-structure" class="anchor" href="#openfn-language-structure" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>OpenFn Language Structure</h2>
 
 <div class="highlight highlight-source-js"><pre><span class="pl-en">each</span>(
     <span class="pl-en">dataPath</span>(<span class="pl-s"><span class="pl-pds">"</span>data[*]<span class="pl-pds">"</span></span>),
-        <span class="pl-en">create</span>(<span class="pl-s"><span class="pl-pds">"</span>Activity__c<span class="pl-pds">"</span></span>, <span class="pl-en">fields</span>(
-        <span class="pl-c">//hard coded</span>
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>RecordTypeID<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>0123456789<span class="pl-pds">"</span></span>),
-        <span class="pl-c">// combination of fields</span>
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>) {<span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">"</span>NAME <span class="pl-pds">"</span></span><span class="pl-k">+</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>subject<span class="pl-pds">"</span></span>)(state).<span class="pl-c1">toString</span>().<span class="pl-c1">replace</span>(<span class="pl-s"><span class="pl-pds">"</span>_<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span> <span class="pl-pds">"</span></span>) <span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span> <span class="pl-pds">"</span></span><span class="pl-k">+</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>Grade__c<span class="pl-pds">"</span></span>)(state).<span class="pl-c1">toString</span>().<span class="pl-c1">replace</span>(<span class="pl-s"><span class="pl-pds">"</span>_<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span> <span class="pl-pds">"</span></span>) <span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span> <span class="pl-pds">"</span></span><span class="pl-k">+</span> ((<span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>School__c<span class="pl-pds">"</span></span>)(state).<span class="pl-c1">toString</span>()<span class="pl-k">===</span><span class="pl-s"><span class="pl-pds">"</span>A<span class="pl-pds">"</span></span>)<span class="pl-k">?</span><span class="pl-s"><span class="pl-pds">"</span>School A<span class="pl-pds">"</span></span><span class="pl-k">:</span><span class="pl-s"><span class="pl-pds">"</span>School B<span class="pl-pds">"</span></span>) <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span> <span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>Date__c<span class="pl-pds">"</span></span>)(state)}),
-        <span class="pl-c">// date field (OKD) to date field (Salesforce)</span>
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Date__c<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>Date__c<span class="pl-pds">"</span></span>)),
-        <span class="pl-c">// decimal field (ODK) to number field (Salesforce)</span>
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Expected_Attendance__c<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>Expected_Attendance__c<span class="pl-pds">"</span></span>)),
-        <span class="pl-c">// text field (ODK) to text field (Salesforce)</span>
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>School__c<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>School__c<span class="pl-pds">"</span></span>)),
-        <span class="pl-c">// sample replace function</span>
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>subject__c<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>){<span class="pl-k">return</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>subject<span class="pl-pds">"</span></span>)(state).<span class="pl-c1">toString</span>().<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span>_<span class="pl-pds">/</span>g</span>,<span class="pl-s"><span class="pl-pds">"</span> <span class="pl-pds">"</span></span>)}),
-        <span class="pl-c">// select_one (ODK) to checkbox / text field (Salesforce)</span>
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Class_split__c<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>Class_split__c<span class="pl-pds">"</span></span>)),
-        <span class="pl-c">// select_multiple (ODK) to multipicklist (Salesforce)</span>
-            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Multipicklistobject__c<span class="pl-pds">"</span></span>,<span class="pl-k">function</span>(<span class="pl-smi">state</span>) {
-                <span class="pl-k">return</span> <span class="pl-c1">Array</span>.<span class="pl-c1">apply</span>(
-                 <span class="pl-c1">null</span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>select_multiple_object<span class="pl-pds">"</span></span>)(state)
-                ).<span class="pl-c1">join</span>(<span class="pl-s"><span class="pl-pds">'</span>;<span class="pl-pds">'</span></span>).<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span>_<span class="pl-pds">/</span>g</span>,<span class="pl-s"><span class="pl-pds">"</span> <span class="pl-pds">"</span></span>)
-            }),
-          ))
-),
-<span class="pl-c">// create new record Tutor Attendance Record</span>
-<span class="pl-en">each</span>(
-  <span class="pl-c">// use path Tutors_list__c (i.e repeat the create code for each tutor selected)</span>
-    <span class="pl-en">merge</span>(<span class="pl-en">dataPath</span>(<span class="pl-s"><span class="pl-pds">"</span>data[*].Tutors_list__c[*]<span class="pl-pds">"</span></span>), <span class="pl-en">fields</span>(
-      <span class="pl-c">// use the ID for the first record created with OpenFn for each tutor</span>
-        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>parentId<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>) { <span class="pl-k">return</span> <span class="pl-smi">state</span>.<span class="pl-smi">references</span>[<span class="pl-smi">state</span>.<span class="pl-smi">references</span>.<span class="pl-c1">length</span><span class="pl-k">-</span><span class="pl-c1">1</span>].<span class="pl-c1">id</span>})
-    )),
-    <span class="pl-en">create</span>(<span class="pl-s"><span class="pl-pds">"</span>Tutors_facilitators_Attendance__c<span class="pl-pds">"</span></span>, <span class="pl-en">fields</span>(
-        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Activity<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>parentId<span class="pl-pds">"</span></span>)),
-     <span class="pl-c">// (refer to Page 1), since tutor_list__c is within data[*] each character is treated as a 'file'.</span>
-        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Tutor_facilitator__c<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>) { <span class="pl-k">return</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>0<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>3<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>4<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>5<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>6<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>7<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>8<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>9<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>10<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>11<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>12<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>13<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>14<span class="pl-pds">"</span></span>)(state)})
-    ))
-),
-<span class="pl-c">// create new record Student Attendance Record</span>
-<span class="pl-en">each</span>(
-  <span class="pl-c">// use path Student_list_A__c (i.e repeat the create code for each tutor selected)</span>
-    <span class="pl-en">merge</span>(<span class="pl-en">dataPath</span>(<span class="pl-s"><span class="pl-pds">"</span>data[*].Student_list_A__c[*]<span class="pl-pds">"</span></span>), <span class="pl-en">fields</span>(
-      <span class="pl-c">// use the ID for the first record created with OpenFn for each student</span>
-        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>parentId<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>) { <span class="pl-k">return</span> <span class="pl-smi">state</span>.<span class="pl-smi">references</span>[<span class="pl-smi">state</span>.<span class="pl-smi">references</span>.<span class="pl-c1">length</span><span class="pl-k">-</span><span class="pl-c1">1</span>].<span class="pl-c1">id</span>})
-    )),
-    <span class="pl-en">create</span>(<span class="pl-s"><span class="pl-pds">"</span>Attendance__c<span class="pl-pds">"</span></span>, <span class="pl-en">fields</span>(
-        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Activity<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>parentId<span class="pl-pds">"</span></span>)),
-     <span class="pl-c">// (refer to Page 1), since Student_list_A__c is within data[*] each character is treated as a 'file'.</span>
-        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>student__c<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>) { <span class="pl-k">return</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>0<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>3<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>4<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>5<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>6<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>7<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>8<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>9<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>10<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>11<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>12<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>13<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>14<span class="pl-pds">"</span></span>)(state)})
-    ))
+        <span class="pl-en">create</span>(<span class="pl-s"><span class="pl-pds">"</span>Object__c<span class="pl-pds">"</span></span>, <span class="pl-en">fields</span>(
+            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>RecordTypeID<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>012345<span class="pl-pds">"</span></span>),
+            <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Date__c<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>))
+            <span class="pl-k">...</span>
+        ))
 )</pre></div>
 
-<h2>
-<a id="list-in-odk-to-multiple-records-in-salesforce-eg-students-getting-their-own-reviews--records-with-same-data" class="anchor" href="#list-in-odk-to-multiple-records-in-salesforce-eg-students-getting-their-own-reviews--records-with-same-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>List in ODK to Multiple Records in Salesforce (E.g. Students getting their own reviews / records with same data)</h2>
+<h3>
+<a id="eachdatapathpathb" class="anchor" href="#eachdatapathpathb" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>each(dataPath(<em>path</em>),<em>B</em>)</h3>
 
-<p>Using the functions and methods from the previous Section, we can use  <strong>OpenFn</strong> to add multiple records into <strong>Salesforce</strong> from a list in ODK. The records will each have the same data except have the different list element such as a student. </p>
+<p><code>each</code> goes through each of the items in the list from the <em>path</em> specified. Therefore for each item the contents of <em>B</em> component will execute. </p>
 
-<div class="highlight highlight-source-js"><pre><span class="pl-c">// repeats for each item in list mentioned in dataPath</span>
-<span class="pl-en">each</span>(
-  <span class="pl-c">// datapath is list_of_students[*]. Therefore if there are 5 students. The each will repeat 5 times (once of each student)</span>
-    <span class="pl-en">merge</span>(<span class="pl-en">dataPath</span>(<span class="pl-s"><span class="pl-pds">"</span>data[*].list_of_students[*]<span class="pl-pds">"</span></span>), <span class="pl-en">fields</span>(
-  <span class="pl-c">// does not use the datapath above (data[*].list_of_students[*]) instead uses data[*] with the field subject</span>
-      <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>$.data[*].subject<span class="pl-pds">"</span></span>)),
-  <span class="pl-c">// does not use the datapath above (data[*].list_of_students[*]) instead uses data[*] with the field date</span>
-      <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>end<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>$.data[*].date<span class="pl-pds">"</span></span>))
-    )),
-    <span class="pl-en">create</span>(<span class="pl-s"><span class="pl-pds">"</span>Case<span class="pl-pds">"</span></span>, <span class="pl-en">fields</span>(
-     <span class="pl-c">// hard coded</span>
-        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>RecordTypeId<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>0123456789<span class="pl-pds">"</span></span>),
-     <span class="pl-c">// field name is received from above and not the ODK form</span>
-        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Subject<span class="pl-pds">"</span></span>,<span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>)),
-        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Date_of_Original_Referral__c<span class="pl-pds">"</span></span>, <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>end<span class="pl-pds">"</span></span>)),
-     <span class="pl-c">// (refer to Page 1), since list_of_students is within data[*] each character is treated as a 'file'.</span>
-        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Beneficiary_Name__c<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">state</span>) { <span class="pl-k">return</span> <span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>0<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>3<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>4<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>5<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>6<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>7<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>8<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>9<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>10<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>11<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>12<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>13<span class="pl-pds">"</span></span>)(state)<span class="pl-k">+</span><span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>14<span class="pl-pds">"</span></span>)(state)}),
-    <span class="pl-c">// hardcoded : "A" -&gt; pick list choice (Salesforce)</span>
-        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Originated_Case__c<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>A<span class="pl-pds">"</span></span>),
-    <span class="pl-c">// text [status] (ODK) -&gt; pick list [Status__c] (Salesforce)</span>
-        <span class="pl-en">field</span>(<span class="pl-s"><span class="pl-pds">"</span>Status__c<span class="pl-pds">"</span></span>,<span class="pl-en">dataValue</span>(<span class="pl-s"><span class="pl-pds">"</span>status<span class="pl-pds">"</span></span>))
-    ))
-)</pre></div>
-      </section>
+<p>In the case of <code>dataPath("data[*]")</code> using the above example there is only one item in the data list. But in the example below we have two items which are separated by a comma.</p>
+
+<div class="highlight highlight-source-json"><pre><span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: [
+    {
+      <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>2016-05-11<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>list_of_letters<span class="pl-pds">"</span></span>:[<span class="pl-s"><span class="pl-pds">"</span>abc<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>def<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>ghi<span class="pl-pds">"</span></span>]
+    },
+    {
+      <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>2016-06-12<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>list_of_letters<span class="pl-pds">"</span></span>:[<span class="pl-s"><span class="pl-pds">"</span>zxy<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>wer<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>fds<span class="pl-pds">"</span></span>]
+    }
+]</pre></div>
+
+<p>In the case of <code>dataPath("list_of_letters[*]")</code> using the above example there is three item in the list. </p>
+
+<p>Note When using <code>dataPath("list_of_letters[*]")</code>, the <code>"list_of_letters":["abc","def","ghi"]</code> can be seen as</p>
+
+<div class="highlight highlight-source-json"><pre><span class="pl-s"><span class="pl-pds">"</span>list_of_letters<span class="pl-pds">"</span></span>:[
+     {
+      <span class="pl-s"><span class="pl-pds">"</span>0<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>a<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>b<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>c<span class="pl-pds">"</span></span>
+     },
+     {
+      <span class="pl-s"><span class="pl-pds">"</span>0<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>d<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>e<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>f<span class="pl-pds">"</span></span>
+     },
+     {
+      <span class="pl-s"><span class="pl-pds">"</span>0<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>g<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>h<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>i<span class="pl-pds">"</span></span>
+     }
+]</pre></div>
+
+<h3>
+<a id="datapathpath" class="anchor" href="#datapathpath" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>dataPath(path)</h3>
+
+<p>In the above example <code>dataPath("data[*]")</code> means the function is looking in the folder <em>\data\</em> which contains the <em>date</em> file and <em>list_of_letters</em> folder.</p>
+
+<p>Suppose we used <code>dataPath("data[*].list_of_letters[*]")</code>, then we would be looking in the folder <em>\list_of_letters\</em> which contains the <em>0</em>, <em>1</em> and <em>2</em> files and not <em>date</em> file.</p>
+
+<h3>
+<a id="createobjectfields" class="anchor" href="#createobjectfields" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>create(Object,fields(...))</h3>
+
+<p>In the above example the "Object__c" represents the Object in <strong>Salesforce</strong> where you want create the data to be stored.</p>
+
+<p>NOTE: If the <code>data[*]</code> is used as the <code>dataPath</code> and using the below data with 2 items, it would create 2 records within <strong>Salesforce</strong>.</p>
+
+<div class="highlight highlight-source-json"><pre><span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: [
+    {
+      <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>2016-05-11<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>list_of_letters<span class="pl-pds">"</span></span>:[<span class="pl-s"><span class="pl-pds">"</span>abc<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>def<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>ghi<span class="pl-pds">"</span></span>]
+    },
+    {
+      <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>2016-06-12<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>list_of_letters<span class="pl-pds">"</span></span>:[<span class="pl-s"><span class="pl-pds">"</span>zxy<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>wer<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>fds<span class="pl-pds">"</span></span>]
+    }
+]</pre></div>
+
+<h3>
+<a id="fieldab" class="anchor" href="#fieldab" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>field(a,b)</h3>
+
+<p>The <code>a</code> component within <code>field</code> represents <em>API Name</em> within <em>Salesforce</em> where the data needs to be stored in. In <strong>Salesforce</strong> the <em>API Name</em> usually ends with <em>__c</em>.
+The <code>b</code> component within <code>field</code> represents where the data is coming from. This can be hardcoded, from the ODK data or a mixture of both.</p>
+
+<h5>
+<a id="hardcoded-version" class="anchor" href="#hardcoded-version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Hardcoded Version</h5>
+
+<p><code>field("RecordTypeID","012345")</code> inserts "012345" into "RecordTypeID" in <strong>Salesforce</strong>.</p>
+
+<h5>
+<a id="odk-version" class="anchor" href="#odk-version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ODK Version</h5>
+
+<p><code>field("Date__c", dataValue("date"))</code> inserts the contents of "date" from ODK into "Date__c" in Salesforce.</p>
+
+<h5>
+<a id="custom-version" class="anchor" href="#custom-version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Custom Version</h5>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">field</span>(<span class="pl-c1">Object</span>,<span class="pl-k">function</span>(<span class="pl-smi">state</span>){<span class="pl-k">return</span> <span class="pl-k">...</span>})</pre></div>
+
+<p>In order to make customised data stored in <strong>Salesforce</strong> a <code>function</code> needs to be created. The above code shows the general structure where <code>return</code> is sends to data to be stored in the <strong>Salesforce</strong> Object.</p>
+
+<p>In the next Section the focus is on making custom return fields and the conversion of <strong>ODK</strong> fields to <strong>Salesforce</strong> fields.</p>
+
+      <div>
+          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/">1. How to use OpenFn With ODK and SalesForce</a>
+          </div>
+          <div>
+          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/functions.html">2. OpenFn Functions and Methods</a>
+          </div>
+          <div>
+          <a class="button" href="http://ryanwongsa.github.io/OpenFnUse/examples.html">3. Example OpenFn Jobs</a>
+      </div>
+      <section>
     </div>
+    
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">Openfnuse maintained by <a href="https://github.com/ryanwongsa">ryanwongsa</a></p>
         <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-
-    
 
   </body>
 </html>
